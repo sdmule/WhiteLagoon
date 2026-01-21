@@ -61,29 +61,41 @@ namespace WhiteLagoon.Web.Controllers
         }
 
         [HttpGet]
-        public IActionResult Update(int villaId)
+        public IActionResult Update(int villaNumberId)
         {
-            Villa? obj = _db.Villas.FirstOrDefault(u => u.Id == villaId);
-            //Villa? obj = _db.Villas.Find(villaId);
-            //var VillaList = _db.Villas.Where(u => u.Price > 50 && u.Occupancy > 0);     
-            if(obj == null)
+            VillaNumberVM villaNumberVM = new()
+            {
+                VillaList = _db.Villas.ToList().Select(u => new SelectListItem
+                {
+                    Text = u.Name,
+                    Value = u.Id.ToString()
+                }),
+                VillaNumber = _db.VillaNumbers.FirstOrDefault(u => u.Villa_Number== villaNumberId)
+            };
+            if (villaNumberVM.VillaNumber == null)
             {
                 return RedirectToAction("Error", "Home");
             }
-            return View(obj);
+            return View(villaNumberVM);
         }
 
         [HttpPost]
-        public IActionResult Update(Villa obj)
+        public IActionResult Update(VillaNumberVM villaNumberVM)
         {
-            if (ModelState.IsValid && obj.Id>0)
+            if (ModelState.IsValid)
             {
-                _db.Villas.Update(obj);
+                _db.VillaNumbers.Update(villaNumberVM.VillaNumber);
                 _db.SaveChanges();
-                TempData["success"] = "The villa has been updated successfully.";
+                TempData["success"] = "The Villa Number has been updated successfully.";
                 return RedirectToAction("Index");
             }
-            return View();
+
+            villaNumberVM.VillaList = _db.Villas.ToList().Select(u => new SelectListItem
+            {
+                Text = u.Name,
+                Value = u.Id.ToString()
+            });
+            return View(villaNumberVM);
         }
 
         [HttpGet]
