@@ -10,7 +10,6 @@ namespace WhiteLagoon.Web.Controllers
     public class VillaNumberController : Controller
     {
         private readonly ApplicationDbContext _db;
-
         public VillaNumberController(ApplicationDbContext db)
         {
             _db = db;
