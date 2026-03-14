@@ -1,0 +1,73 @@
+﻿@model AmenityVM
+
+<div class="card-body border p-4">
+    <!-- Form starts -->
+    <form method="post" asp-action="Create" asp-controller="Amenity" class="row">
+
+        <div class="p-3">
+
+            <!-- 🔴 VALIDATION SUMMARY
+                 This shows ALL validation errors at the top of the form
+                 If ModelState fails, errors will appear here -->
+            <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+            <!-- VILLA DROPDOWN -->
+            <div class="form-floating py-1 col-12">
+                <select asp-for="Amenity.VillaId"
+                        asp-items="@Model.VillaList"
+                        class="form-select border shadow">
+
+                    <!-- Default option -->
+                    <option value="">--Select Villa--</option>
+                </select>
+
+                <label asp-for="Amenity.VillaId" class="ms-2"></label>
+
+                <!-- Field level validation message -->
+                <span asp-validation-for="Amenity.VillaId" class="text-danger"></span>
+            </div>
+
+            <!-- AMENITY NAME -->
+            <div class="form-floating py-1 col-12">
+                <input asp-for="Amenity.Name" class="form-control border shadow" />
+
+                <label asp-for="Amenity.Name" class="ms-2"></label>
+
+                <!-- Field level validation -->
+                <span asp-validation-for="Amenity.Name" class="text-danger"></span>
+            </div>
+
+            <!-- DESCRIPTION -->
+            <div class="form-floating py-1 col-12">
+                <input asp-for="Amenity.Description" class="form-control border shadow" />
+
+                <label asp-for="Amenity.Description" class="ms-2"></label>
+
+                <span asp-validation-for="Amenity.Description" class="text-danger"></span>
+            </div>
+
+            <!-- BUTTONS -->
+            <div class="row pt-2">
+                <div class="col-6 col-md-3">
+                    <button type="submit" class="btn btn-success w-100">
+                        <i class="bi bi-check-circle"></i> Create
+                    </button>
+                </div>
+
+                <div class="col-6 col-md-3">
+                    <a asp-controller="Amenity" asp-action="Index" class="btn btn-secondary w-100">
+                        <i class="bi bi-x-circle"></i> Cancel
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </form>
+</div>
+
+
+@section Scripts {
+    @{
+        <partial name="_ValidationScriptsPartial"></partial>
+    }
+}

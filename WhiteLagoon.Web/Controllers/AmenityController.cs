@@ -26,6 +26,7 @@ namespace WhiteLagoon.Web.Controllers
         {
             AmenityVM amenityVM = new()
             {
+                Amenity = new Amenity(),
                 VillaList = _unitOfWork.Villa.GetAll().Select(u => new SelectListItem
                 {
                     Text = u.Name,
@@ -35,22 +36,43 @@ namespace WhiteLagoon.Web.Controllers
             return View(amenityVM);
         }
 
+        //[HttpPost]
+        //public IActionResult Create(AmenityVM obj)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        _unitOfWork.Amenity.Add(obj.Amenity);
+        //        _unitOfWork.Save();
+        //        TempData["success"] = "The amenity has been created successfully.";
+        //        return RedirectToAction(nameof(Index));
+        //    }
+  
+        //    obj.VillaList = _unitOfWork.Villa.GetAll().Select(u => new SelectListItem
+        //    {
+        //        Text = u.Name,
+        //        Value = u.Id.ToString()
+        //    });
+        //    return View(obj);
+        //}
+
         [HttpPost]
         public IActionResult Create(AmenityVM obj)
         {
-            if (ModelState.IsValid)
+            if (obj.Amenity != null && ModelState.IsValid)
             {
                 _unitOfWork.Amenity.Add(obj.Amenity);
                 _unitOfWork.Save();
+
                 TempData["success"] = "The amenity has been created successfully.";
                 return RedirectToAction(nameof(Index));
             }
-  
+
             obj.VillaList = _unitOfWork.Villa.GetAll().Select(u => new SelectListItem
             {
                 Text = u.Name,
                 Value = u.Id.ToString()
             });
+
             return View(obj);
         }
 
