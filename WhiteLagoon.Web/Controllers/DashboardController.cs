@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WhiteLagoon.Application.Common.Interfaces;
 using WhiteLagoon.Application.Common.Utility;
+using WhiteLagoon.Web.ViewModels;
 
 namespace WhiteLagoon.Web.Controllers
 {
@@ -18,18 +19,34 @@ namespace WhiteLagoon.Web.Controllers
         {
             return View();
         }
-        }
+        
 
         public async Task<IActionResult> GetTotalBookingRadialChartData()
         {
             var totalBookings = _unitOfWork.Booking.GetAll(u => u.Status != SD.StatusPending
             || u.Status == SD.StatusCancelled);
 
-            var countByCurrentMonth = totalBookings.Count(u => u.BookingDate >= currentMonthStartDate && 
+            var countByCurrentMonth = totalBookings.Count(u => u.BookingDate >= currentMonthStartDate &&
             u.BookingDate <= DateTime.Now);
 
             var countByPreviousMonth = totalBookings.Count(u => u.BookingDate >= previousMonthStartDate &&
             u.BookingDate <= currentMonthStartDate);
+
+            RadialBarChartVM radialBarChartVM = new();
+
+            int increaseDecreaseRatio = 100;
+
+            if (countByPreviousMonth != 0)
+            {
+                increaseDecreaseRatio = Convert.ToInt32((countByCurrentMonth - countByPreviousMonth) / countByPreviousMonth * 100);
+            }
+
+            radialBarChartVM.TotalCount = totalBookings.Count();
+            radialBarChartVM.CountInCurrentMonth = countByCurrentMonth;
+            radialBarChartVM.HasRatioIncreased = currentMonthStartDate > previousMonthStartDate;
+            radialBarChartVM.Series = new int[] { increaseDecreaseRatio };
+
+            return Json(radialBarChartVM);
 
         }
     }
