@@ -10,7 +10,7 @@ using WhiteLagoon.Web.ViewModels;
 
 namespace WhiteLagoon.Web.Controllers
 {
-    [Authorize(Roles =SD.Role_Admin)]
+    [Authorize(Roles = SD.Role_Admin)]
     public class AmenityController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -49,7 +49,7 @@ namespace WhiteLagoon.Web.Controllers
         //        TempData["success"] = "The amenity has been created successfully.";
         //        return RedirectToAction(nameof(Index));
         //    }
-  
+
         //    obj.VillaList = _unitOfWork.Villa.GetAll().Select(u => new SelectListItem
         //    {
         //        Text = u.Name,
@@ -89,7 +89,7 @@ namespace WhiteLagoon.Web.Controllers
                     Text = u.Name,
                     Value = u.Id.ToString()
                 }),
-                Amenity = _unitOfWork.Amenity.Get(u => u.Id== amenityId)
+                Amenity = _unitOfWork.Amenity.Get(u => u.Id == amenityId)
             };
             if (amenityVM.Amenity == null)
             {
