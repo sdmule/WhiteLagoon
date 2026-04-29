@@ -62,11 +62,11 @@ namespace WhiteLagoon.Web.Controllers
             var bookedVillas = _unitOfWork.Booking.GetAll(u => u.Status == SD.StatusApproved ||
                                u.Status == SD.StatusCheckedIn).ToList();
 
-            
-                int roomAvailable = SD.VillaRoomsAvailable_Count
-                    (villa.Id, villaNumbersList, booking.CheckInDate, booking.Nights, bookedVillas);
 
-            if(roomAvailable == 0)
+            int roomAvailable = SD.VillaRoomsAvailable_Count
+                (villa.Id, villaNumbersList, booking.CheckInDate, booking.Nights, bookedVillas);
+
+            if (roomAvailable == 0)
             {
                 TempData["error"] = "Room has been sold out!";
                 //no rooms available 
@@ -78,7 +78,7 @@ namespace WhiteLagoon.Web.Controllers
                 });
 
             }
-            
+
 
             _unitOfWork.Booking.Add(booking);
             _unitOfWork.Save();
@@ -120,17 +120,17 @@ namespace WhiteLagoon.Web.Controllers
         [Authorize]
         public IActionResult BookingConfirmation(int bookingId)
         {
-            Booking bookingFromDb = _unitOfWork.Booking.Get(u=>u.Id == bookingId,
+            Booking bookingFromDb = _unitOfWork.Booking.Get(u => u.Id == bookingId,
                 includeProperties: "User,Villa");
 
-            if(bookingFromDb.Status == SD.StatusPending)
+            if (bookingFromDb.Status == SD.StatusPending)
             {
                 //this is a pending order, we need to confirm if payment was successful
 
                 var service = new SessionService();
                 Session session = service.Get(bookingFromDb.StripeSessionId);
 
-                if(session.PaymentStatus == "paid")
+                if (session.PaymentStatus == "paid")
                 {
                     //bookingFromDb.Status = SD.StatusApproved;
                     //_unitOfWork.Save();
@@ -149,7 +149,7 @@ namespace WhiteLagoon.Web.Controllers
             Booking bookingFromDb = _unitOfWork.Booking.Get(u => u.Id == bookingId,
                 includeProperties: "User,Villa");
 
-            if(bookingFromDb.VillaNumber == 0 && bookingFromDb.Status == SD.StatusApproved)
+            if (bookingFromDb.VillaNumber == 0 && bookingFromDb.Status == SD.StatusApproved)
             {
                 var availableVillaNumber = AssignAvailableVillaNumberByVilla(bookingFromDb.VillaId);
 
@@ -161,13 +161,13 @@ namespace WhiteLagoon.Web.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles =SD.Role_Admin)]
+        [Authorize(Roles = SD.Role_Admin)]
         public IActionResult CheckIn(Booking booking)
         {
             _unitOfWork.Booking.UpdateStatus(booking.Id, SD.StatusCheckedIn, booking.VillaNumber);
             _unitOfWork.Save();
             TempData["Success"] = "Booking Updated Successfully.";
-            return RedirectToAction(nameof(BookingDetails), new {bookingId = booking.Id});
+            return RedirectToAction(nameof(BookingDetails), new { bookingId = booking.Id });
         }
 
         [HttpPost]
@@ -199,7 +199,7 @@ namespace WhiteLagoon.Web.Controllers
             var checkedInVilla = _unitOfWork.Booking.GetAll(u => u.VillaId == villaId && u.Status == SD.StatusCheckedIn)
                 .Select(u => u.VillaNumber);
 
-            foreach(var villaNumber in villaNumbers)
+            foreach (var villaNumber in villaNumbers)
             {
                 if (!checkedInVilla.Contains(villaNumber.Villa_Number))
                 {
