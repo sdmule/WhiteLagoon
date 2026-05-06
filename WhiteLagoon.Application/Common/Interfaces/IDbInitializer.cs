@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WhiteLagoon.Application.Common.Interfaces
 {
-    public class IDbInitializer
+    public interface IDbInitializer
     {
         void Initialize();
     }
