@@ -70,7 +70,7 @@ namespace WhiteLagoon.Web.Controllers
             int bookingsByNewCustomer = customerWithOneBooking.Count();
             int bookingsByReturningCustomer = totalBookings.Count() - bookingsByNewCustomer;
 
-            PieChartVM pieChartVM = new()
+            PieChartDto pieChartVM = new()
             {
                 Labels = new string[] { "New Customer Bookings", "Returning Customer Bookings" },
                 Series = new decimal[] { bookingsByNewCustomer, bookingsByReturningCustomer }
@@ -142,9 +142,9 @@ namespace WhiteLagoon.Web.Controllers
 
             return Json(lineChartVM);
         }
-        private static RadialBarChartVM GetRadialChartDataModel(int totalCount, double currentMonthCount, double prevMonthCount)
+        private static RadialBarChartDto GetRadialChartDataModel(int totalCount, double currentMonthCount, double prevMonthCount)
         {
-            RadialBarChartVM radialBarChartVM = new();
+            RadialBarChartDto radialBarChartVM = new();
 
             int increaseDecreaseRatio = 100;
 
