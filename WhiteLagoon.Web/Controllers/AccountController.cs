@@ -11,24 +11,21 @@ namespace WhiteLagoon.Web.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly IUnitOfWork _unitOfWOrk;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
 
-        public AccountController(IUnitOfWork unitOfWOrk,
-            UserManager<ApplicationUser> userManager,
+        public AccountController(UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             RoleManager<IdentityRole> roleManager)
         {
-            _unitOfWOrk = unitOfWOrk;
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
         }
 
         [HttpGet]
-        public IActionResult Login(string returnUrl=null)
+        public IActionResult Login(string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
 
@@ -54,7 +51,11 @@ namespace WhiteLagoon.Web.Controllers
         public IActionResult Register(string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
-            
+            if (!_roleManager.RoleExistsAsync(SD.Role_Admin).GetAwaiter().GetResult()) 
+            {
+                _roleManager.CreateAsync(new IdentityRole(SD.Role_Admin)).Wait();
+                _roleManager.CreateAsync(new IdentityRole(SD.Role_Customer)).Wait();
+            }
 
             RegisterVM registerVM = new()
             {
@@ -115,12 +116,12 @@ namespace WhiteLagoon.Web.Controllers
                 }
 
             }
-                registerVM.RoleList = _roleManager.Roles.Select(x => new SelectListItem
-                {
-                    Text = x.Name,
-                    Value = x.Name
-                });
-             
+            registerVM.RoleList = _roleManager.Roles.Select(x => new SelectListItem
+            {
+                Text = x.Name,
+                Value = x.Name
+            });
+
 
             return View(registerVM);
         }
@@ -131,12 +132,12 @@ namespace WhiteLagoon.Web.Controllers
             if (ModelState.IsValid)
             {
                 var result = await _signInManager
-                    .PasswordSignInAsync(loginVM.Email, loginVM.Password, loginVM.RememberMe, lockoutOnFailure:false);
+                    .PasswordSignInAsync(loginVM.Email, loginVM.Password, loginVM.RememberMe, lockoutOnFailure: false);
 
                 if (result.Succeeded)
                 {
                     var user = await _userManager.FindByEmailAsync(loginVM.Email);
-                    if(await _userManager.IsInRoleAsync(user, SD.Role_Admin))
+                    if (await _userManager.IsInRoleAsync(user, SD.Role_Admin))
                     {
                         return RedirectToAction("Index", "Dashboard");
                     }
