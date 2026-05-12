@@ -12,5 +12,7 @@ namespace WhiteLagoon.Application.Services.Interface
         void CreateBooking(Booking booking);
         IEnumerable<Booking> GetAllBookings(string userId = "", string? statusFilterList = "");
         Booking GetBookingById(int bookingId);
+        void UpdateStatus(int bookingId, string bookingStatus, int villaNumber);
+        void UpdateStripePaymentID(int bookingId, string sessionId, string paymentIntentId);
     }
 }
